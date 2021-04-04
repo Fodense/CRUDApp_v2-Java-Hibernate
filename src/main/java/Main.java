@@ -11,55 +11,106 @@ public class Main {
 
         UserService userService = new UserService();
 
-        //User user = new User("User6", "User6", 27, 700);
-        //userService.saveUser(user);
-        //userService.updateUser(5, "User5", "User5", 35, 800);
+        userService.updateUser(5, "User5", "User5", 35, 800);
         //serService.deleteUser(6);
-        //userService.findUser(1);
-        //userService.findAllUsers();
-
-        System.out.println(
-                "1   Показать всех пользователей\n" +
-                "2   Показать пользователя по его уникальному номеру\n" +
-                "3   Добавить нового пользователя\n" +
-                "4   Изменить пользователя\n" +
-                "5   Удалить пользователя\n" +
-                "0   Выход\n" +
-                "Пожалуйста, выберите нужный пункт меню:    "
-        );
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        boolean exit = false;
 
-        int numberMenu = 0;
+        do {
+            System.out.println(
+                    "1   Показать всех пользователей\n" +
+                    "2   Показать пользователя по его уникальному номеру\n" +
+                    "3   Добавить нового пользователя\n" +
+                    "4   Изменить пользователя\n" +
+                    "5   Удалить пользователя\n" +
+                    "0   Выход\n" +
+                    "Пожалуйста, выберите нужный пункт меню:"
+            );
 
-        try {
-            numberMenu = Integer.parseInt(reader.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            int numberMenu = 0;
 
-        switch (numberMenu) {
-            case 1:
-                userService.findAllUsers();
-                break;
-            case 2:
-                System.out.println("Укажите уникальный номер пользователя: ");
-                int numberUser = 0;
+            try {
+                numberMenu = Integer.parseInt(reader.readLine());
 
-                try {
-                    numberUser = Integer.parseInt(reader.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            } catch (IOException | NumberFormatException e) {
+                e.printStackTrace();
 
-                userService.findUser(numberUser);
-                break;
-            case 0:
-                break;
-            default:
-                System.out.println("Такого пункта нет!\n");
-                break;
-        }
+                System.out.println("Введите корректный пункт меню");
+                numberMenu = Integer.parseInt(reader.readLine());
+            }
 
+            switch (numberMenu) {
+                case 1:
+                    userService.findAllUsers();
+                    System.out.print("\n");
+                    break;
+                case 2:
+                    System.out.println("Укажите уникальный номер пользователя ");
+
+                    int numberUser = 0;
+
+                    try {
+                        numberUser = Integer.parseInt(reader.readLine());
+                    } catch (IOException | NumberFormatException e) {
+                        e.printStackTrace();
+
+                        System.out.println("Введите корректный номер пользователя");
+                        numberUser = Integer.parseInt(reader.readLine());
+                    }
+
+                    userService.findUser(numberUser);
+
+                    System.out.print("\n");
+                    break;
+                case 3:
+                    User user = new User();
+
+                    System.out.println("Введите его Фамилию");
+                    user.setLastName(reader.readLine());
+                    System.out.println("Введите его Имя");
+                    user.setFirstName(reader.readLine());
+                    System.out.println("Введите его Возраст");
+                    user.setAge(Integer.parseInt(reader.readLine()));
+                    System.out.println("Введите его Зарплату");
+                    user.setSalary(Integer.parseInt(reader.readLine()));
+
+                    userService.saveUser(user);
+
+                    System.out.println("\n");
+                    break;
+                case 4:
+                    System.out.println("Введите номер пользователя, которого хотите изменить");
+                    int id = Integer.parseInt(reader.readLine());
+
+                    System.out.println("Пользователь - " + id);
+                    userService.findUser(id);
+
+                    System.out.println("Введите новую Фамилию");
+                    String lastName = reader.readLine();
+                    System.out.println("Введите новое Имя");
+                    String firstname = reader.readLine();
+                    System.out.println("Введите новый Возраст");
+                    int age = Integer.parseInt(reader.readLine());
+                    System.out.println("Введите новую Зарплату");
+                    int salary = Integer.parseInt(reader.readLine());
+
+                    userService.updateUser(id, lastName, firstname, age, salary);
+
+                    System.out.println();
+                    System.out.println("Отредактированный пользователь - " + id);
+                    userService.findUser(id);
+
+                    System.out.println("\n");
+                    break;
+                case 0:
+                    exit = true;
+                default:
+                    System.out.println("Такого пункта нет!\n");
+                    break;
+            }
+        } while (!exit);
+
+        reader.close();
     }
 }
