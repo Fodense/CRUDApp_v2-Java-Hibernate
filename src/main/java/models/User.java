@@ -11,15 +11,6 @@ public class User {
     private int age;
     private int salary;
 
-    public User() {}
-
-    public User(String lastName, String firstName, int age, int salary) {
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.age = age;
-        this.salary = salary;
-    }
-
     @Id
     @Column(name = "id", nullable = false)
     public int getId() {
@@ -37,7 +28,14 @@ public class User {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        if (lastName.length() != 0) {
+            this.lastName = lastName;
+        } else {
+            System.out.println(
+                  "Пустое поле\n" +
+                  "Чтобы его изменить перейдите в 4-ый пункт меню."
+            );
+        }
     }
 
     @Basic
@@ -47,7 +45,14 @@ public class User {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        if (firstName.length() != 0) {
+            this.firstName = firstName;
+        } else {
+            System.out.println(
+                    "Пустое поле\n" +
+                    "Чтобы его изменить перейдите в 4-ый пункт меню."
+            );
+        }
     }
 
     @Basic
@@ -57,7 +62,15 @@ public class User {
     }
 
     public void setAge(int age) {
-        this.age = age;
+        if (age >= 0) {
+            this.age = age;
+        } else {
+            System.out.println(
+                    "Введён отрицательный возраст - \"" + age + "\"\n" +
+                    "Этому полю будет присвоено значение " + "\"0\"\n" +
+                    "Чтобы его изменить перейдите в 4-ый пункт меню."
+            );
+        }
     }
 
     @Basic
@@ -67,7 +80,15 @@ public class User {
     }
 
     public void setSalary(int salary) {
-        this.salary = salary;
+        if (salary >= 0) {
+            this.salary = salary;
+        } else {
+            System.out.println(
+                    "Введена отрицательная зароботная плата - \"" + salary + "\"\n" +
+                    "Этому полю будет присвоено значение " + "\"0\"\n" +
+                    "Чтобы его изменить перейдите в 4-ый пункт меню."
+            );
+        }
     }
 
     @Override
@@ -94,5 +115,16 @@ public class User {
         result = 31 * result + age;
         result = 31 * result + salary;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", age=" + age +
+                ", salary=" + salary +
+                '}';
     }
 }

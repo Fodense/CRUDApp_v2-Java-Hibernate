@@ -4,17 +4,16 @@ import services.UserService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
         UserService userService = new UserService();
 
-        userService.updateUser(5, "User5", "User5", 35, 800);
-        //serService.deleteUser(6);
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        User user = new User();
+
         boolean exit = false;
 
         do {
@@ -25,7 +24,7 @@ public class Main {
                     "4   Изменить пользователя\n" +
                     "5   Удалить пользователя\n" +
                     "0   Выход\n" +
-                    "Пожалуйста, выберите нужный пункт меню:"
+                    "Пожалуйста, выберите нужный пункт меню от 0 до 5:"
             );
 
             int numberMenu = 0;
@@ -36,75 +35,75 @@ public class Main {
             } catch (IOException | NumberFormatException e) {
                 e.printStackTrace();
 
-                System.out.println("Введите корректный пункт меню");
+                System.out.println("Выберите пункт меню от 0 до 5!");
                 numberMenu = Integer.parseInt(reader.readLine());
             }
 
             switch (numberMenu) {
                 case 1:
                     userService.findAllUsers();
-                    System.out.print("\n");
+
+                    System.out.println();
                     break;
                 case 2:
                     System.out.println("Укажите уникальный номер пользователя ");
 
-                    int numberUser = 0;
-
                     try {
-                        numberUser = Integer.parseInt(reader.readLine());
+                        int numberUser = Integer.parseInt(reader.readLine().trim());
+                            try {
+                                userService.findUser(numberUser);
+                            } catch (IllegalStateException e) {
+                                e.printStackTrace();
+
+                                System.out.println("Пользователь с таким id не найден в базе данных");
+                            }
                     } catch (IOException | NumberFormatException e) {
                         e.printStackTrace();
 
-                        System.out.println("Введите корректный номер пользователя");
-                        numberUser = Integer.parseInt(reader.readLine());
+                        System.out.println("Получен некорректный номер");
                     }
 
-                    userService.findUser(numberUser);
-
-                    System.out.print("\n");
+                    System.out.println();
                     break;
                 case 3:
-                    User user = new User();
-
-                    System.out.println("Введите его Фамилию");
-                    user.setLastName(reader.readLine());
-                    System.out.println("Введите его Имя");
-                    user.setFirstName(reader.readLine());
-                    System.out.println("Введите его Возраст");
-                    user.setAge(Integer.parseInt(reader.readLine()));
-                    System.out.println("Введите его Зарплату");
-                    user.setSalary(Integer.parseInt(reader.readLine()));
-
                     userService.saveUser(user);
-
-                    System.out.println("\n");
                     break;
                 case 4:
                     System.out.println("Введите номер пользователя, которого хотите изменить");
-                    int id = Integer.parseInt(reader.readLine());
+                    int id = Integer.parseInt(reader.readLine().trim());
 
                     System.out.println("Пользователь - " + id);
                     userService.findUser(id);
 
-                    System.out.println("Введите новую Фамилию");
-                    String lastName = reader.readLine();
-                    System.out.println("Введите новое Имя");
-                    String firstname = reader.readLine();
-                    System.out.println("Введите новый Возраст");
-                    int age = Integer.parseInt(reader.readLine());
-                    System.out.println("Введите новую Зарплату");
-                    int salary = Integer.parseInt(reader.readLine());
+                    userService.updateUser(id);
 
-                    userService.updateUser(id, lastName, firstname, age, salary);
-
-                    System.out.println();
                     System.out.println("Отредактированный пользователь - " + id);
                     userService.findUser(id);
 
                     System.out.println("\n");
                     break;
+                case 5:
+                    System.out.println("Введите номер пользователя, которого вы хотите удалить");
+
+                    try {
+                        int idDelete = Integer.parseInt(reader.readLine().trim());
+                        System.out.println("Пользователь - " + idDelete);
+
+                        userService.findUser(idDelete);
+
+                        try {
+                            userService.deleteUser(idDelete);
+                            System.out.println("Удаление успешно выполнено!");
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case 0:
                     exit = true;
+                    break;
                 default:
                     System.out.println("Такого пункта нет!\n");
                     break;
