@@ -28,7 +28,7 @@ public class UserDao {
             ));
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -48,7 +48,7 @@ public class UserDao {
             session.save(user);
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -75,7 +75,7 @@ public class UserDao {
             }
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -98,7 +98,7 @@ public class UserDao {
             }
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -110,7 +110,7 @@ public class UserDao {
 
     public void findAll() {
         Transaction transaction = null;
-        List<User> listOfUser = null;
+        List<User> listOfUser;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
@@ -129,7 +129,7 @@ public class UserDao {
             });
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
