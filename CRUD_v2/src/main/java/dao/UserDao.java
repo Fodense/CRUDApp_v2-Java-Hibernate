@@ -5,9 +5,13 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import utils.HibernateUtil;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class UserDao {
+    static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public void findById(int id) {
         Transaction transaction = null;
@@ -28,7 +32,7 @@ public class UserDao {
             ));
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -45,10 +49,12 @@ public class UserDao {
 
             transaction = session.beginTransaction();
 
+            setUserFieldsToSave(user);
+
             session.save(user);
 
             transaction.commit();
-            session.close();
+            System.out.println("Пользователь успешно добавлен!");
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -58,7 +64,22 @@ public class UserDao {
         }
     }
 
-    public void update(int id, String lastName, String firstName, int age, int salary) {
+    private void setUserFieldsToSave(User user) {
+        try {
+            System.out.println("Введите его Фамилию");
+            user.setLastName(reader.readLine().trim());
+            System.out.println("Введите его Имя");
+            user.setFirstName(reader.readLine().trim());
+            System.out.println("Введите его Возраст");
+            user.setAge(Integer.parseInt(reader.readLine().trim()));
+            System.out.println("Введите его Зарплату");
+            user.setSalary(Integer.parseInt(reader.readLine().trim()));
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(int id) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -67,20 +88,34 @@ public class UserDao {
 
             User user = session.get(User.class, id);
             if (user != null) {
-                user.setLastName(lastName);
-                user.setFirstName(firstName);
-                user.setAge(age);
-                user.setSalary(salary);
+                setUserFieldsToUpdate(user);
                 session.update(user);
             }
 
             transaction.commit();
-            session.close();
+            System.out.println("Пользователь успешно изменён!");
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
 
+            e.printStackTrace();
+        }
+    }
+
+    private void setUserFieldsToUpdate (User user) {
+        try {
+            System.out.println("Введите новую Фамилию");
+            user.setLastName(reader.readLine().trim());
+            System.out.println("Введите новое Имя");
+            user.setFirstName(reader.readLine().trim());
+            System.out.println("Введите новый Возраст");
+            user.setAge(Integer.parseInt(reader.readLine().trim()));
+            System.out.println("Введите новую Зарплату");
+            user.setSalary(Integer.parseInt(reader.readLine().trim()));
+
+        } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
     }
@@ -98,7 +133,7 @@ public class UserDao {
             }
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -110,7 +145,7 @@ public class UserDao {
 
     public void findAll() {
         Transaction transaction = null;
-        List<User> listOfUser = null;
+        List<User> listOfUser;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
@@ -129,7 +164,7 @@ public class UserDao {
             });
 
             transaction.commit();
-            session.close();
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
